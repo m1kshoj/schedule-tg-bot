@@ -22,18 +22,15 @@ def start(message):
 
 @token.message_handler(commands=['help'])
 def help(message):
-    ms = 'Список команд:\n/help - доступные команды\n/schedule - расписание\nСделали бота мужчины честной судьбы (МЧС) @m1kshoj и @pussyfish'
+    ms = 'Список команд:\n/help - доступные команды\n/today - расписание\n/tomorrow - расписание на завтра\nСделали бота мужчины честной судьбы (МЧС) @m1kshoj и @pussyfish'
     token.send_message(message.chat.id, ms, parse_mode='html')
 
 
-@token.message_handler(commands=['schedule'])
-def schedule(message):
-    mes = "Расписание на сегодня: \n"
+def ScheduleToday(today, alt):
     test = pars.VoenmemSchelude('и415б')
     ms = test.GetSchelude()
     gg = re.split(separator_days, ms)
     days_week_dict = {}
-    alt = ""
     if week_number % 10 == 0:
         input_week = '2'
         for idx, i in enumerate(gg):
@@ -45,8 +42,8 @@ def schedule(message):
                 days_week_dict[idx].append(j)
         for value in days_week_dict.values():
             for item in value:
-                alt+=item
-                alt+="\n"
+                alt += item
+                alt += "\n"
     else:
         input_week = '1'
         for idx, i in enumerate(gg):
@@ -56,14 +53,24 @@ def schedule(message):
                 if week_days[input_week] in j:
                     continue
                 days_week_dict[idx].append(j)
-
         for (key, value) in days_week_dict.items():
             if key == today:
                 for item in value:
                     alt += item
                     alt += '\n'
+    return alt
 
-    token.send_message(message.chat.id, alt, parse_mode='html')
+
+@token.message_handler(commands=['today'])
+def schedule(message):
+    alt = "Расписание на сегодня:"
+    token.send_message(message.chat.id, ScheduleToday(today, alt), parse_mode='html')
+
+
+@token.message_handler(commands=['tomorrow'])
+def schedule(message):
+    alt = "Расписание на завтра:"
+    token.send_message(message.chat.id, ScheduleToday(today + 1, alt), parse_mode='html')
 
 
 token.polling(none_stop=True)
