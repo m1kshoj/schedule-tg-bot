@@ -1,3 +1,4 @@
+import time
 import telebot
 import pars
 import re
@@ -22,13 +23,13 @@ def start(message):
 
 @token.message_handler(commands=['help'])
 def help(message):
-    ms = 'Список команд:\n/help - доступные команды\n/today - расписание\n/tomorrow - расписание на завтра\nСделали бота мужчины честной судьбы (МЧС) @m1kshoj и @pussyfish'
+    ms = 'Список команд:\n/help - доступные команды\n/today - расписание\n/tomorrow - расписание на завтра\n/kit - кот'
     token.send_message(message.chat.id, ms, parse_mode='html')
 
 
 def ScheduleToday(today, alt):
-    test = pars.VoenmemSchelude('и415б')
-    ms = test.GetSchelude()
+    test = pars.VoenmemSchedule('и415б')
+    ms = test.GetSchedule()
     gg = re.split(separator_days, ms)
     days_week_dict = {}
     if week_number % 10 == 0:
@@ -71,6 +72,12 @@ def schedule(message):
 def schedule(message):
     alt = "Расписание на завтра:"
     token.send_message(message.chat.id, ScheduleToday(today + 1, alt), parse_mode='html')
+
+
+@token.message_handler(commands=['kit'])
+def kit(message):
+    url = f'https://cataas.com/cat?t=${time.time()}'
+    token.send_photo(message.chat.id, url)
 
 
 token.polling(none_stop=True)
